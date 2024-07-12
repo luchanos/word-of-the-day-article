@@ -1,7 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
 
-import settings
 from app.context import FastAPIWithContext
 from api.ping.router import technical_router
 from fastapi import APIRouter, FastAPI
@@ -25,8 +24,8 @@ async def lifespan(app: FastAPI):
 
 def create_minimal_app() -> FastAPIWithContext:
     app = FastAPIWithContext(
-        title="Offers API",
-        description="Serbian real estate search service",
+        title="Articles API",
+        description="Word of the Day Articles API",
         version="0.1.0",
         # lifespan=lifespan,
     )
