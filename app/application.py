@@ -1,5 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
+from api.articles.router import articles_router
 
 from app.context import FastAPIWithContext
 from api.ping.router import technical_router
@@ -12,6 +13,7 @@ logger = logging.getLogger("app")
 
 def include_routers():
     api_router = APIRouter(prefix="/api")
+    api_router.include_router(router=articles_router)
     return api_router
 
 
