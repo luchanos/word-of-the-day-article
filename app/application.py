@@ -7,6 +7,7 @@ from api.ping.router import technical_router
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.wordsmith import WordsmithClient
 
 logger = logging.getLogger("app")
 
@@ -29,7 +30,8 @@ def create_minimal_app() -> FastAPIWithContext:
         title="Articles API",
         description="Word of the Day Articles API",
         version="0.1.0",
-        # lifespan=lifespan,
+        lifespan=lifespan,
+        wordsmith_client=WordsmithClient(),
     )
 
     app.include_router(router=technical_router)
