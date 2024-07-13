@@ -22,7 +22,7 @@ def event_loop():
 
 @pytest.fixture(scope="session")
 async def openai_client() -> AsyncOpenAIClient:
-    client = AsyncOpenAIClient(api_key="test_openai_key")
+    client = AsyncOpenAIClient(api_key=settings.OPENAI_TEST_API_KEY)
     yield client
 
 
@@ -33,11 +33,11 @@ async def wordsmith_client() -> WordsmithClient:
 
 
 @pytest.fixture
-async def test_app(wordsmith_client) -> FastAPIWithContext:
+async def test_app(wordsmith_client, openai_client) -> FastAPIWithContext:
     app = create_minimal_app()
 
     app.wordsmith_client = wordsmith_client
-    app.openai_client = AsyncOpenAIClient(settings.OPENAI_TEST_API_KEY)
+    app.openai_client = openai_client
 
     yield app
 
