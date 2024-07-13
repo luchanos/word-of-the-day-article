@@ -1,4 +1,3 @@
-import asyncio
 from unittest.mock import AsyncMock
 
 import httpx
@@ -8,17 +7,6 @@ from app.application import create_minimal_app
 from app.context import FastAPIWithContext
 from app.openai_client import AsyncOpenAIClient
 from app.wordsmith import WordsmithClient
-
-
-@pytest.fixture(scope="session")
-def event_loop():
-    """
-    For proper loop execution in scope="session".
-    https://github.com/tortoise/tortoise-orm/issues/638#issuecomment-830124562
-    """
-    loop = asyncio.get_event_loop()
-    yield loop
-    loop.close()
 
 
 @pytest.fixture(scope="session")
