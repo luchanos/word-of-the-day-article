@@ -1,6 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 from api.articles.router import articles_router
+import settings
 
 from app.context import FastAPIWithContext
 from api.ping.router import technical_router
@@ -8,6 +9,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.wordsmith import WordsmithClient
+from app.openai_client import AsyncOpenAIClient
 
 logger = logging.getLogger("app")
 
@@ -32,6 +34,7 @@ def create_minimal_app() -> FastAPIWithContext:
         version="0.1.0",
         lifespan=lifespan,
         wordsmith_client=WordsmithClient(),
+        openai_client=AsyncOpenAIClient(settings.OPENAI_API_KEY),
     )
 
     app.include_router(router=technical_router)

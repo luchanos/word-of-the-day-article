@@ -1,8 +1,6 @@
 import httpx
 from httpx import Response
 
-OPENAI_API_KEY = "your_openai_api_key"
-
 
 class AsyncOpenAIClient:
     def __init__(self, api_key: str, base_url: str = "api.openai.com"):
@@ -11,9 +9,9 @@ class AsyncOpenAIClient:
 
     def generate_headers(self):
         return {
-        "Authorization": f"Bearer {self.api_key}",
-        "Content-Type": "application/json"
-    }
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
 
     async def make_prompt_request(
             self,
@@ -27,13 +25,17 @@ class AsyncOpenAIClient:
         headers = self.generate_headers()
         payload = {
             "model": model,
-            "prompt": prompt,
+            "messages": [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
             "max_tokens": max_tokens,
             "temperature": temperature,
             "n": n,
-            "stop": stop,
+            "stop": stop
         }
+
         async with httpx.AsyncClient() as client:
-            response = await client.post("https://api.openai.com/v1/completions", json=payload, headers=headers)
+            response = await client.post(f"https://{self.base_url}/v1/chat/completions", json=payload, headers=headers)
             response.raise_for_status()
             return response
