@@ -1,19 +1,17 @@
-import json
-import datetime
 import redis.asyncio as redis
 import asyncio
 
 
 class RedisClient:
     def __init__(self, host: str, port: int = 6379, db: int = 0, max_connections: int = 10):
-        self.pool = redis.ConnectionPool(
+        self._pool = redis.ConnectionPool(
             host=host,
             port=port,
             db=db,
             max_connections=max_connections,
             decode_responses=True
         )
-        self.client = redis.Redis(connection_pool=self.pool)
+        self.client = redis.Redis(connection_pool=self._pool)
 
     async def set(self, key: str, value: str):
         await self.client.set(key, value)
