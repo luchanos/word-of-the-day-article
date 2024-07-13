@@ -19,7 +19,6 @@ In the response I want to see 100% valid for json.loads() json-file with two key
     async def __call__(self, app: FastAPIWithContext) -> GetArticleResponseModel:
         article = await app.cache["article"].get_cached_article()
         if article is not None:
-            article = json.loads(article)
             result = GetArticleResponseModel(
                 actual_date=date.today(),
                 header=article['header'],

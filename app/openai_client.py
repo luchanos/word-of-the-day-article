@@ -1,5 +1,5 @@
 import httpx
-from httpx import Response
+from httpx import Response, HTTPStatusError, RequestError
 
 
 class AsyncOpenAIClient:
@@ -52,7 +52,12 @@ class AsyncOpenAIClient:
             stop=stop,
             model=model,
         )
-        async with httpx.AsyncClient() as client:
-            response = await client.post(f"https://{self.base_url}/v1/chat/completions", json=payload, headers=headers)
-            response.raise_for_status()
-            return response
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(f"https://{self.base_url}/v1/chat/completions", json=payload, headers=headers)
+                response.raise_for_status()
+                return response
+        except HTTPStatusError as e:
+            raise RuntimeError(f"HTTP error occurred: {e.response.status_code} {e.response.text}") from e
+        except RequestError as e:
+            raise RuntimeError(f"Request error occurred: {str(e)}") from e
