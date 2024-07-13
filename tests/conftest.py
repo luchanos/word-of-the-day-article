@@ -1,4 +1,5 @@
 import asyncio
+from unittest.mock import AsyncMock
 
 import httpx
 import pytest
@@ -21,15 +22,16 @@ def event_loop():
 
 
 @pytest.fixture(scope="session")
-async def openai_client() -> AsyncOpenAIClient:
-    client = AsyncOpenAIClient(api_key=settings.OPENAI_TEST_API_KEY)
-    yield client
+def openai_client() -> AsyncMock:
+    client = AsyncMock(spec=AsyncOpenAIClient)
+    client.api_key = settings.OPENAI_TEST_API_KEY
+    return client
 
 
 @pytest.fixture(scope="session")
-async def wordsmith_client() -> WordsmithClient:
-    client = WordsmithClient()
-    yield client
+def wordsmith_client() -> AsyncMock:
+    client = AsyncMock(spec=WordsmithClient)
+    return client
 
 
 @pytest.fixture
