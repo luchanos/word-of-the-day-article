@@ -1,5 +1,9 @@
 import logging
-from contextlib import asynccontextmanager
+
+import redis
+from httpx import Request
+from starlette.responses import JSONResponse
+
 from api.articles.router import articles_router
 import settings
 
@@ -21,13 +25,6 @@ def include_routers():
     return api_router
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # app.redis_pool = await RedisClient.setup_redis_db_pool()
-    yield
-    # await app.redis_db_pool.close()
-
-
 def create_minimal_app() -> FastAPIWithContext:
     app = FastAPIWithContext(
         title="Articles API",
@@ -42,20 +39,19 @@ def create_minimal_app() -> FastAPIWithContext:
     app.include_router(router=technical_router)
     app.include_router(include_routers())
 
-    # register_errors(app)
+    register_errors(app)
 
     return app
 
 
-# todo luchanos make for redis
-# def register_errors(app: FastAPI):
-#     @app.exception_handler(opensearchpy.OpenSearchException)
-#     async def _(request: Request, exc: opensearchpy.OpenSearchException):
-#         logger.exception("request=%s opensearch error: %s %s ", request, exc, getattr(exc, "info", ""))
-#         return JSONResponse(
-#             status_code=500,
-#             content={"detail": exc.args},
-#         )
+def register_errors(app: FastAPI):
+    @app.exception_handler(redis.RedisError)
+    async def _(request: Request, exc: redis.RedisError):
+        logger.exception("request=%s redis error: %s %s ", request, exc, getattr(exc, "info", ""))
+        return JSONResponse(
+            status_code=500,
+            content={"detail": exc.args},
+        )
 
 
 def create_app() -> FastAPI:
