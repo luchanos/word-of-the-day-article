@@ -2,7 +2,6 @@ import asyncio
 
 import httpx
 import pytest
-from unittest.mock import AsyncMock
 import settings
 from app.application import create_minimal_app
 from app.context import FastAPIWithContext
@@ -42,6 +41,12 @@ async def redis_client() -> RedisClient:
     await client.close()
 
 
+@pytest.fixture(scope="function", autouse=True)
+async def clean_redis():
+    client = RedisClient(host=settings.REDIS_TEST_HOST, port=settings.REDIS_TEST_PORT)
+    await client.flushdb()
+
+
 @pytest.fixture(scope="session")
 async def openai_client() -> AsyncOpenAIClient:
     client = AsyncOpenAIClient(api_key="test_openai_key")
@@ -69,12 +74,3 @@ async def test_app(redis_client, wordsmith_client) -> FastAPIWithContext:
 async def test_cli(test_app) -> httpx.AsyncClient:
     async with httpx.AsyncClient(app=test_app, base_url="http://test") as test_client:
         yield test_client
-
-
-@pytest.fixture(scope="function", autouse=True)
-async def clean_redis(redis_client: RedisClient):
-    from redis.asyncio import Redis
-    client = Redis(host=settings.REDIS_TEST_HOST, port=settings.REDIS_TEST_PORT)
-    yield
-    await client.flushdb()
-    await client.close()
