@@ -30,7 +30,6 @@ def create_minimal_app() -> FastAPIWithContext:
         title="Articles API",
         description="Word of the Day Articles API",
         version="0.1.0",
-        lifespan=lifespan,
         wordsmith_client=WordsmithClient(),
         openai_client=AsyncOpenAIClient(settings.OPENAI_API_KEY),
         redis_client=RedisClient(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
