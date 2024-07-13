@@ -1,10 +1,10 @@
 local_file = "docker-compose-ci.yaml"
 
-up_local_compose:
+up:
 	docker compose -f $(local_file) up -d
 
-down_local_compose:
+down:
 	docker compose -f $(local_file) down
 
-recreate_local_compose:
+recreate:
 	docker compose -f $(local_file) up -d --build --force-recreate
