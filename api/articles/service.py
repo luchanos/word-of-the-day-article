@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class GetArticleHandler:
     GENERATE_ARTICLE_PROMPT_TEMPLATE = """
 Generate an article about the word '{awad}'."
-In the response I want to see json-file with two keys:
+In the response I want to see 100% valid for json.loads() json-file with two keys:
 1. header - here you need to generate a header for article with max length 50 symbols.
 2. body - an article about the word '{awad}' with max length 300 symbols.
 """
