@@ -21,19 +21,6 @@ def event_loop():
     loop.close()
 
 
-# @pytest.fixture(autouse=True)
-# def block_httpx(monkeypatch):
-#     import httpx
-#
-#     def raise_runtime_error(*args, **kwargs):
-#         raise RuntimeError("External calls are blocked during testing")
-#
-#     monkeypatch.setattr(httpx.AsyncClient, "get", raise_runtime_error)
-#     monkeypatch.setattr(httpx.AsyncClient, "post", raise_runtime_error)
-#     monkeypatch.setattr(httpx.AsyncClient, "put", raise_runtime_error)
-#     monkeypatch.setattr(httpx.AsyncClient, "delete", raise_runtime_error)
-
-
 @pytest.fixture(scope="session")
 async def redis_client() -> RedisClient:
     client = RedisClient(host=settings.REDIS_TEST_HOST, port=settings.REDIS_TEST_PORT)
@@ -41,7 +28,7 @@ async def redis_client() -> RedisClient:
     await client.close()
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="function")
 async def clean_redis():
     client = RedisClient(host=settings.REDIS_TEST_HOST, port=settings.REDIS_TEST_PORT)
     await client.flushdb()

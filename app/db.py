@@ -1,5 +1,4 @@
 import redis.asyncio as redis
-import asyncio
 
 
 class RedisClient:
