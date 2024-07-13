@@ -13,17 +13,16 @@ class AsyncOpenAIClient:
             "Content-Type": "application/json"
         }
 
-    async def make_prompt_request(
-            self,
+    @staticmethod
+    def build_payload(
             prompt: str,
             max_tokens: int = 100,
             temperature: float = 0.5,
             n: int = 1,
             stop=None,
-            model: str = "gpt-3.5-turbo",
-    ) -> Response:
-        headers = self.generate_headers()
-        payload = {
+            model: str = "gpt-3.5-turbo"
+    ):
+        return {
             "model": model,
             "messages": [
                 {"role": "system", "content": "You are a helpful assistant."},
@@ -35,6 +34,24 @@ class AsyncOpenAIClient:
             "stop": stop
         }
 
+    async def make_prompt_request(
+            self,
+            prompt: str,
+            max_tokens: int = 100,
+            temperature: float = 0.5,
+            n: int = 1,
+            stop=None,
+            model: str = "gpt-3.5-turbo",
+    ) -> Response:
+        headers = self.generate_headers()
+        payload = self.build_payload(
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            n=n,
+            stop=stop,
+            model=model,
+        )
         async with httpx.AsyncClient() as client:
             response = await client.post(f"https://{self.base_url}/v1/chat/completions", json=payload, headers=headers)
             response.raise_for_status()
