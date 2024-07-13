@@ -15,11 +15,14 @@ class RedisClient:
         )
         self.client = redis.Redis(connection_pool=self.pool)
 
-    async def cache_article(self, header: str, article: str):
-        await self.client.set(str(datetime.date.today()), json.dumps({"header": header, "body": article}))
+    async def set(self, key: str, value: str):
+        await self.client.set(key, value)
 
-    async def get_cached_article(self):
-        return await self.client.get(str(datetime.date.today()))
+    async def get(self, key: str):
+        return await self.client.get(key)
+
+    async def flushdb(self):
+        await self.client.flushdb()
 
     async def close(self):
         await self.client.connection_pool.disconnect()

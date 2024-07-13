@@ -5,7 +5,6 @@ from api.articles.model import GetArticleResponseModel
 from app.context import FastAPIWithContext
 import json
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -18,7 +17,7 @@ In the response I want to see json-file with two keys:
 """
 
     async def __call__(self, app: FastAPIWithContext) -> GetArticleResponseModel:
-        article = await app.redis_client.get_cached_article()
+        article = await app.cache["article"].get_cached_article()
         if article is not None:
             article = json.loads(article)
             result = GetArticleResponseModel(
@@ -32,7 +31,7 @@ In the response I want to see json-file with two keys:
                 prompt=self.GENERATE_ARTICLE_PROMPT_TEMPLATE.format(awad=awad))
             content = response.json()['choices'][0]['message']['content']
             response_data = json.loads(content)
-            await app.redis_client.cache_article(header=response_data["header"], article=response_data["body"])
+            await app.cache["article"].cache_article(header=response_data["header"], article=response_data["body"])
             result = GetArticleResponseModel(
                 actual_date=date.today(),
                 header=response_data['header'],
