@@ -8,6 +8,7 @@ from api.ping.router import technical_router
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.db import RedisClient
 from app.wordsmith import WordsmithClient
 from app.openai_client import AsyncOpenAIClient
 
@@ -35,6 +36,7 @@ def create_minimal_app() -> FastAPIWithContext:
         lifespan=lifespan,
         wordsmith_client=WordsmithClient(),
         openai_client=AsyncOpenAIClient(settings.OPENAI_API_KEY),
+        redis_client=RedisClient(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
     )
 
     app.include_router(router=technical_router)

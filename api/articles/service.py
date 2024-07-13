@@ -18,7 +18,10 @@ In the response I want to see json-file with two keys:
 """
 
     async def __call__(self, app: FastAPIWithContext) -> GetArticleResponseModel:
-        awad = await app.wordsmith_client.get_awad()
+        awad = await app.redis_client.get_cached_word()
+        if awad is None:
+            awad = await app.wordsmith_client.get_awad()
+            await app.redis_client.cache_article(awad)
         response = await app.openai_client.make_prompt_request(
             prompt=self.GENERATE_ARTICLE_PROMPT_TEMPLATE % (awad, ))
         content = response.json()['choices'][0]['message']['content']
