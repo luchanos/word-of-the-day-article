@@ -5,7 +5,6 @@ import pytest
 import settings
 from app.application import create_minimal_app
 from app.context import FastAPIWithContext
-from app.db import RedisClient
 from app.openai_client import AsyncOpenAIClient
 from app.wordsmith import WordsmithClient
 
@@ -22,19 +21,6 @@ def event_loop():
 
 
 @pytest.fixture(scope="session")
-async def redis_client() -> RedisClient:
-    client = RedisClient(host=settings.REDIS_TEST_HOST, port=settings.REDIS_TEST_PORT)
-    yield client
-    await client.close()
-
-
-@pytest.fixture(scope="function")
-async def clean_redis():
-    client = RedisClient(host=settings.REDIS_TEST_HOST, port=settings.REDIS_TEST_PORT)
-    await client.flushdb()
-
-
-@pytest.fixture(scope="session")
 async def openai_client() -> AsyncOpenAIClient:
     client = AsyncOpenAIClient(api_key="test_openai_key")
     yield client
@@ -47,12 +33,11 @@ async def wordsmith_client() -> WordsmithClient:
 
 
 @pytest.fixture
-async def test_app(redis_client, wordsmith_client) -> FastAPIWithContext:
+async def test_app(wordsmith_client) -> FastAPIWithContext:
     app = create_minimal_app()
 
     app.wordsmith_client = wordsmith_client
     app.openai_client = AsyncOpenAIClient(settings.OPENAI_TEST_API_KEY)
-    app.redis_client = redis_client
 
     yield app
 

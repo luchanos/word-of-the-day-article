@@ -1,5 +1,4 @@
 import logging
-from contextlib import asynccontextmanager
 
 import redis
 from httpx import Request
@@ -13,7 +12,6 @@ from api.ping.router import technical_router
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.db import RedisClient
 from app.wordsmith import WordsmithClient
 from app.openai_client import AsyncOpenAIClient
 
@@ -26,21 +24,13 @@ def include_routers():
     return api_router
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPIWithContext):
-    yield
-    await app.redis_client.close()
-
-
 def create_minimal_app() -> FastAPIWithContext:
     app = FastAPIWithContext(
         title="Articles API",
         description="Word of the Day Articles API",
         version="0.1.0",
-        lifespan=lifespan,
         wordsmith_client=WordsmithClient(),
         openai_client=AsyncOpenAIClient(settings.OPENAI_API_KEY),
-        redis_client=RedisClient(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
     )
 
     app.include_router(router=technical_router)
