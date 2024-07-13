@@ -88,7 +88,48 @@ async def test_get_article_json_decode_error(test_cli, mocker, test_app):
     response = await test_cli.get("/api/v1/articles")
     assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
     data = response.json()
-    assert data["detail"] == "Failed to decode JSON response"
+    assert data["detail"] == "Internal server error"
+
+    mock_cache.assert_called_once()
+    mock_cache_article.assert_not_called()
+    mock_get_awad.assert_called_once()
+    mock_make_prompt_request.assert_called_once_with(
+        prompt=GetArticleHandler.GENERATE_ARTICLE_PROMPT_TEMPLATE.format(awad="psychrophobia")
+    )
+
+
+async def test_get_article_wordsmith_client_error(test_cli, mocker, test_app):
+    """Handle error from Wordsmith client."""
+    mock_cache = mocker.patch('app.cache.ArticleCache.get_cached_article', return_value=None)
+    mock_cache_article = mocker.patch('app.cache.ArticleCache.cache_article', return_value=None)
+
+    mock_get_awad = mocker.patch.object(test_app.wordsmith_client, 'get_awad',
+                                        side_effect=RuntimeError("Wordsmith error"))
+
+    response = await test_cli.get("/api/v1/articles")
+    assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+    data = response.json()
+    assert data["detail"] == "Internal server error"
+
+    mock_cache.assert_called_once()
+    mock_cache_article.assert_not_called()
+    mock_get_awad.assert_called_once()
+    test_app.openai_client.make_prompt_request.assert_not_called()
+
+
+async def test_get_article_openai_client_error(test_cli, mocker, test_app):
+    """Handle error from OpenAI client."""
+    mock_cache = mocker.patch('app.cache.ArticleCache.get_cached_article', return_value=None)
+    mock_cache_article = mocker.patch('app.cache.ArticleCache.cache_article', return_value=None)
+
+    mock_get_awad = mocker.patch.object(test_app.wordsmith_client, 'get_awad', return_value='psychrophobia')
+    mock_make_prompt_request = mocker.patch.object(test_app.openai_client, 'make_prompt_request',
+                                                   side_effect=RuntimeError("OpenAI error"))
+
+    response = await test_cli.get("/api/v1/articles")
+    assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+    data = response.json()
+    assert data["detail"] == "Internal server error"
 
     mock_cache.assert_called_once()
     mock_cache_article.assert_not_called()

@@ -36,10 +36,10 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             return self.build_response(response_data)
         except json.JSONDecodeError as e:
             logger.error(f"JSON decode error: {str(e)}")
-            raise HTTPException(status_code=500, detail="Failed to decode JSON response")
+            raise HTTPException(status_code=500, detail="Internal server error")
         except Exception as e:
             logger.error(f"Failed to get article: {str(e)}")
-            raise HTTPException(status_code=500, detail="Failed to get article")
+            raise HTTPException(status_code=500, detail="Internal server error")
 
     @staticmethod
     def build_response(data: dict) -> GetArticleResponseModel:
@@ -66,7 +66,7 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             return json.loads(content)
         except json.JSONDecodeError as e:
             logger.error(f"Failed to decode JSON response: {str(e)}")
-            raise
+            raise HTTPException(status_code=500, detail="Internal server error")
         except Exception as e:
             logger.error(f"Failed to generate article: {str(e)}")
-            raise RuntimeError("Failed to generate article") from e
+            raise HTTPException(status_code=500, detail="Internal server error")
