@@ -50,8 +50,8 @@ async def wordsmith_client() -> WordsmithClient:
 async def test_app(redis_client, wordsmith_client) -> FastAPIWithContext:
     app = create_minimal_app()
 
-    app.wordsmith_client = wordsmith_client,
-    app.openai_client = AsyncOpenAIClient(settings.OPENAI_TEST_API_KEY),
+    app.wordsmith_client = wordsmith_client
+    app.openai_client = AsyncOpenAIClient(settings.OPENAI_TEST_API_KEY)
     app.redis_client = redis_client
 
     yield app
