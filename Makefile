@@ -1,4 +1,4 @@
-local_file = "docker-compose-local.yaml"
+local_file = "docker-compose-ci.yaml"
 
 up_local_compose:
 	docker compose -f $(local_file) up -d
