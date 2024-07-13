@@ -1,36 +1,25 @@
 from http import HTTPStatus
+from unittest.mock import AsyncMock
 
+from app.cache import ArticleCacheV2
 from app.openai_client import AsyncOpenAIClient
 import httpx
+import pytest
+
+from app.wordsmith import WordsmithClient
 
 
-async def test_get_article_from_cache(test_cli, mocker, httpx_mock):
-    mock_response = """
-        <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-            <channel>
-                <atom:link href="https://wordsmith-test.org/awad/rss1.xml" rel="self" type="application/rss+xml"/>
-                <title>Wordsmith.org: Today's Word</title>
-                <link>https://wordsmith.org/</link>
-                <copyright>Copyright 1994-2022 Wordsmith.org</copyright>
-                <description>The magic of words - that's what Wordsmith.org is about.</description>
-                <language>en-us</language>
-                <ttl>1440</ttl>
-                <item>
-                    <title>psychrophobia</title>
-                    <link>https://wordsmith.org/words/psychrophobia.html</link>
-                    <description>noun: An abnormal fear of cold.</description>
-                </item>
-            </channel>
-        </rss>
-        """
-    httpx_mock.add_response(url="https://wordsmith.org/awad/rss1.xml", text=mock_response)
+async def test_get_article_flow(test_cli, mocker, httpx_mock):
+    test_header = "Generated Header"
+    test_body = "Test Content"
     mock_response_json = {
         "choices": [{
             "message": {
-                "content": '{"header": "Generated Header", "body": "Generated Body"}'
+                "content": '{"header": "%s", "body": "%s"}' % (test_header, test_body)
             }
         }]
     }
+    mocker.patch.object(WordsmithClient, 'get_awad', return_value='psychrophobia')
     mock_openai_response_content = httpx.Response(
         status_code=200,
         json=mock_response_json
@@ -39,3 +28,20 @@ async def test_get_article_from_cache(test_cli, mocker, httpx_mock):
 
     response = await test_cli.get("/api/v1/articles")
     assert response.status_code == HTTPStatus.OK
+    data = response.json()
+    assert data["header"] == test_header
+    assert data["body"] == test_body
+
+
+@pytest.mark.asyncio
+async def test_get_article_from_cache(test_cli, mocker):
+    test_header = "Test Header"
+    test_body = "Test Body"
+    ArticleCacheV2.get_cached_article = AsyncMock(
+        return_value={"actual_date": "2024-01-01", "header": test_header, "body": test_body})
+    response = await test_cli.get("/api/v1/articles")
+    assert response.status_code == HTTPStatus.OK
+    data = response.json()
+    assert data["header"] == test_header
+    assert data["body"] == test_body
+    ArticleCacheV2.get_cached_article.assert_called_once()
