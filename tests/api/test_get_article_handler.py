@@ -4,9 +4,9 @@ from api.articles.service import GetArticleHandler
 import httpx
 
 
-# cases: get article - mock WordsmithClient and OpenAI client
 async def test_get_article_flow(test_cli, mocker, test_app):
     """Generate an article for the first time: make requests to all clients + save an article to the cache."""
+    assert not test_app.cache["article"].cache
     test_header = "Generated Header"
     test_body = "Test Content"
     mock_response_json = {
@@ -45,3 +45,23 @@ async def test_get_article_flow(test_cli, mocker, test_app):
     mock_make_prompt_request.assert_called_once_with(
         prompt=GetArticleHandler.GENERATE_ARTICLE_PROMPT_TEMPLATE.format(awad="psychrophobia")
     )
+
+
+async def test_get_article_from_cache(test_cli, mocker, test_app):
+    """Retrieve an article from the cache: no external client requests."""
+    test_header = "Cached Header"
+    test_body = "Cached Content"
+    mock_cache = mocker.patch('app.cache.ArticleCache.get_cached_article', return_value={
+        "header": test_header,
+        "body": test_body
+    })
+
+    response = await test_cli.get("/api/v1/articles")
+    assert response.status_code == HTTPStatus.OK
+    data = response.json()
+    assert data["header"] == test_header
+    assert data["body"] == test_body
+
+    mock_cache.assert_called_once()
+    test_app.wordsmith_client.get_awad.assert_not_called()
+    test_app.openai_client.make_prompt_request.assert_not_called()
