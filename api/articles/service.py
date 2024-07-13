@@ -20,6 +20,7 @@ In the response I want to see json-file with two keys:
     async def __call__(self, app: FastAPIWithContext) -> GetArticleResponseModel:
         article = await app.redis_client.get_cached_article()
         if article is not None:
+            article = json.loads(article)
             result = GetArticleResponseModel(
                 actual_date=date.today(),
                 header=article['header'],
