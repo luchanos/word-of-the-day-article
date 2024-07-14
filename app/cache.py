@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 class ArticleCache:
     def __init__(self, ttl: int = 60 * 60 * 24, maxsize: int = 128):
-        self.ttl = ttl  # time-to-live in seconds
+        self.ttl = ttl
         self.maxsize = maxsize
         self.cache = OrderedDict()
 
