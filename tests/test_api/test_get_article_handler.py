@@ -1,7 +1,8 @@
 from http import HTTPStatus
 
-from api.articles.service import GetArticleHandler
 import httpx
+
+from api.articles.service import GetArticleHandler
 
 
 async def test_get_article_flow(test_cli, mocker, test_app):

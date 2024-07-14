@@ -1,5 +1,5 @@
 import httpx
-from httpx import Response, HTTPStatusError, RequestError
+from httpx import HTTPStatusError, RequestError, Response
 
 
 class AsyncOpenAIClient:

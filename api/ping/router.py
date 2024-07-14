@@ -1,7 +1,7 @@
 __all__ = ("technical_router",)
-from api.ping.service import PingApp
 from fastapi import APIRouter, Depends
 
+from api.ping.service import PingApp
 
 technical_router = APIRouter(tags=["ping"])
 

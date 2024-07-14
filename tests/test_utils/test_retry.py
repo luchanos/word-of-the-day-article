@@ -1,6 +1,7 @@
-import pytest
 import asyncio
 from unittest.mock import AsyncMock
+
+import pytest
 
 from utils.retry import retry
 
@@ -41,7 +42,6 @@ async def test_succeed_immediately():
 
 
 async def test_retry_delay(mocker):
-    mock = AsyncMock()
     sleep_mock = mocker.patch("asyncio.sleep", side_effect=asyncio.sleep)
 
     with pytest.raises(ValueError, match="This function always fails"):

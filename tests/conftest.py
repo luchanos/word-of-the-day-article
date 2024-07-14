@@ -2,6 +2,7 @@ from unittest.mock import AsyncMock
 
 import httpx
 import pytest
+
 import settings
 from app.application import create_minimal_app
 from app.context import FastAPIWithContext

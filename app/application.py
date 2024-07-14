@@ -1,19 +1,17 @@
 import logging
 
 import redis
+from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from httpx import Request
 from starlette.responses import JSONResponse
 
-from api.articles.router import articles_router
 import settings
-
-from app.context import FastAPIWithContext
+from api.articles.router import articles_router
 from api.ping.router import technical_router
-from fastapi import APIRouter, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-from app.wordsmith import WordsmithClient
+from app.context import FastAPIWithContext
 from app.openai_client import AsyncOpenAIClient
+from app.wordsmith import WordsmithClient
 
 logger = logging.getLogger("app")
 

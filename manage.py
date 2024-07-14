@@ -1,9 +1,9 @@
 import logging.config
 
-import settings
 import uvicorn
 import uvloop
 
+import settings
 
 uvloop.install()
 logging.config.dictConfig(settings.LOGGING_CONFIG)

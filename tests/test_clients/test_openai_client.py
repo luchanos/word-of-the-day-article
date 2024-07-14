@@ -1,5 +1,5 @@
-import pytest
 import httpx
+import pytest
 
 import settings
 from app.openai_client import AsyncOpenAIClient
