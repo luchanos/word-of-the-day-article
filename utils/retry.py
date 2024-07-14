@@ -6,7 +6,7 @@ from typing import Any, Callable
 logger = logging.getLogger(__name__)
 
 
-def retry(n: int, delay: int = 0) -> Callable:
+def retry(n: int, delay: float = 0.0) -> Callable:
     def wrapper(func: Callable) -> Callable:
         @wraps(func)
         async def inner(*args, **kwargs) -> Any:

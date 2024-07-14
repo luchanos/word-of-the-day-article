@@ -57,7 +57,7 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             logger.error(f"Failed to fetch word of the day: {str(e)}")
             raise
 
-    @retry(n=3, delay=0)
+    @retry(n=3, delay=.1)
     async def generate_article(self, app: FastAPIWithContext, awad: str) -> dict:
         try:
             response = await app.openai_client.make_prompt_request(
