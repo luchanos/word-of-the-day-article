@@ -6,7 +6,6 @@ from fastapi import HTTPException
 
 from api.articles.model import GetArticleResponseModel
 from app.context import FastAPIWithContext
-
 from utils.retry import retry
 
 logger = logging.getLogger(__name__)
