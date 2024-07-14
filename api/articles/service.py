@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from api.articles.model import GetArticleResponseModel
 from app.context import FastAPIWithContext
 
-# from utils.retry import retry
+from utils.retry import retry
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             logger.error(f"Failed to fetch word of the day: {str(e)}")
             raise RuntimeError("Failed to fetch word of the day") from e
 
-    # @retry(3)
+    @retry(3)
     async def generate_article(self, app: FastAPIWithContext, awad: str) -> dict:
         try:
             response = await app.openai_client.make_prompt_request(

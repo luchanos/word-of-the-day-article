@@ -114,7 +114,7 @@ async def test_get_article_json_decode_error(test_cli, mocker, test_app):
     mock_cache.assert_called_once()
     mock_cache_article.assert_not_called()
     mock_get_awad.assert_called_once()
-    mock_make_prompt_request.assert_called_once_with(
+    mock_make_prompt_request.assert_called_with(
         prompt=GetArticleHandler.GENERATE_ARTICLE_PROMPT_TEMPLATE.format(
             awad="psychrophobia"
         )
@@ -173,7 +173,7 @@ async def test_get_article_openai_client_error(test_cli, mocker, test_app):
     mock_cache.assert_called_once()
     mock_cache_article.assert_not_called()
     mock_get_awad.assert_called_once()
-    mock_make_prompt_request.assert_called_once_with(
+    mock_make_prompt_request.assert_called_with(
         prompt=GetArticleHandler.GENERATE_ARTICLE_PROMPT_TEMPLATE.format(
             awad="psychrophobia"
         )
