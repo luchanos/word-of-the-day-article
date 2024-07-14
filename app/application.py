@@ -1,10 +1,7 @@
 import logging
 
-import redis
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from httpx import Request
-from starlette.responses import JSONResponse
 
 import settings
 from api.articles.router import articles_router
@@ -34,21 +31,7 @@ def create_minimal_app() -> FastAPIWithContext:
     app.include_router(router=technical_router)
     app.include_router(include_routers())
 
-    register_errors(app)
-
     return app
-
-
-def register_errors(app: FastAPI) -> None:
-    @app.exception_handler(redis.RedisError)
-    async def _(request: Request, exc: redis.RedisError):
-        logger.exception(
-            "request=%s redis error: %s %s ", request, exc, getattr(exc, "info", "")
-        )
-        return JSONResponse(
-            status_code=500,
-            content={"detail": exc.args},
-        )
 
 
 def create_app() -> FastAPI:

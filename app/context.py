@@ -6,10 +6,6 @@ from app.wordsmith import WordsmithClient
 
 
 class FastAPIWithContext(FastAPI):
-    wordsmith_client: WordsmithClient
-    openai_client: AsyncOpenAIClient
-    article_cache: ArticleCache
-
     def __init__(
         self,
         *args,

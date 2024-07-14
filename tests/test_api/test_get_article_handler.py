@@ -107,7 +107,7 @@ async def test_get_article_json_decode_error(test_cli, mocker, test_app):
     )
 
     response = await test_cli.get("/api/v1/articles")
-    assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+    assert response.status_code == HTTPStatus.SERVICE_UNAVAILABLE
     data = response.json()
     assert data["detail"] == "Internal server error"
 
@@ -137,7 +137,7 @@ async def test_get_article_wordsmith_client_error(test_cli, mocker, test_app):
     )
 
     response = await test_cli.get("/api/v1/articles")
-    assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+    assert response.status_code == HTTPStatus.SERVICE_UNAVAILABLE
     data = response.json()
     assert data["detail"] == "Internal server error"
 
@@ -166,7 +166,7 @@ async def test_get_article_openai_client_error(test_cli, mocker, test_app):
     )
 
     response = await test_cli.get("/api/v1/articles")
-    assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+    assert response.status_code == HTTPStatus.SERVICE_UNAVAILABLE
     data = response.json()
     assert data["detail"] == "Internal server error"
 

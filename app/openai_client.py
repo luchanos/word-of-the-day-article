@@ -1,6 +1,8 @@
 import httpx
 from httpx import HTTPStatusError, RequestError, Response
 
+from app.exceptions import OpenAIClientHTTPError, OpenAIClientRequestError
+
 
 class AsyncOpenAIClient:
     def __init__(self, api_key: str, base_url: str = "api.openai.com"):
@@ -62,8 +64,6 @@ class AsyncOpenAIClient:
                 response.raise_for_status()
                 return response
         except HTTPStatusError as e:
-            raise RuntimeError(
-                f"HTTP error occurred: {e.response.status_code} {e.response.text}"
-            ) from e
+            raise OpenAIClientHTTPError(e.response.status_code, e.response.text) from e
         except RequestError as e:
-            raise RuntimeError(f"Request error occurred: {str(e)}") from e
+            raise OpenAIClientRequestError(str(e)) from e

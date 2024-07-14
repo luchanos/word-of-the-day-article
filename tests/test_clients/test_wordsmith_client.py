@@ -1,6 +1,11 @@
 import httpx
 import pytest
 
+from app.exceptions import (
+    WordsmithClientHTTPError,
+    WordsmithClientParseError,
+    WordsmithClientRequestError,
+)
 from app.wordsmith import WordsmithClient
 
 
@@ -38,7 +43,7 @@ async def test_get_awad_http_error(httpx_mock):
     )
 
     client = WordsmithClient(base_url="wordsmith-test.org")
-    with pytest.raises(RuntimeError, match="Error fetching word of the day"):
+    with pytest.raises(WordsmithClientHTTPError, match="HTTP error occurred: 404"):
         await client.get_awad()
 
 
@@ -47,7 +52,7 @@ async def test_get_awad_request_error(httpx_mock):
     httpx_mock.add_exception(exception, url="https://wordsmith-test.org/awad/rss1.xml")
 
     client = WordsmithClient(base_url="wordsmith-test.org")
-    with pytest.raises(RuntimeError, match="Error fetching word of the day"):
+    with pytest.raises(WordsmithClientRequestError, match="Connection error"):
         await client.get_awad()
 
 
@@ -63,5 +68,7 @@ async def test_get_awad_no_entries(httpx_mock):
     )
 
     client = WordsmithClient(base_url="wordsmith-test.org")
-    with pytest.raises(RuntimeError, match="No entries found in the RSS feed"):
+    with pytest.raises(
+        WordsmithClientParseError, match="No entries found in the RSS feed"
+    ):
         await client.get_awad()

@@ -4,7 +4,7 @@ import json
 
 class ArticleCache:
     def __init__(self, *args, **kwargs):
-        self.cache = {}
+        self.cache = {}  # expiry dict or Ordered dict with limits
 
     async def cache_article(self, header: str, article: str) -> None:
         key = str(datetime.date.today())

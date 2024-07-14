@@ -36,10 +36,10 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             return self.build_response(response_data)
         except json.JSONDecodeError as e:
             logger.error(f"JSON decode error: {str(e)}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+            raise HTTPException(status_code=503, detail="Internal server error")
         except Exception as e:
             logger.error(f"Failed to get article: {str(e)}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+            raise HTTPException(status_code=503, detail="Internal server error")
 
     @staticmethod
     def build_response(data: dict) -> GetArticleResponseModel:
@@ -55,9 +55,9 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             return await app.wordsmith_client.get_awad()
         except Exception as e:
             logger.error(f"Failed to fetch word of the day: {str(e)}")
-            raise RuntimeError("Failed to fetch word of the day") from e
+            raise
 
-    @retry(3)
+    @retry(n=3, delay=0)
     async def generate_article(self, app: FastAPIWithContext, awad: str) -> dict:
         try:
             response = await app.openai_client.make_prompt_request(
@@ -67,7 +67,7 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             return json.loads(content)
         except json.JSONDecodeError as e:
             logger.error(f"Failed to decode JSON response: {str(e)}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+            raise HTTPException(status_code=429, detail="Please, retry your request")
         except Exception as e:
             logger.error(f"Failed to generate article: {str(e)}")
-            raise HTTPException(status_code=500, detail="Internal server error")
+            raise HTTPException(status_code=503, detail="Internal server error")

@@ -2,6 +2,7 @@ import httpx
 import pytest
 
 import settings
+from app.exceptions import OpenAIClientHTTPError, OpenAIClientRequestError
 from app.openai_client import AsyncOpenAIClient
 
 
@@ -39,7 +40,7 @@ async def test_make_prompt_request_http_error(httpx_mock):
     )
 
     client = AsyncOpenAIClient(api_key=settings.OPENAI_TEST_API_KEY)
-    with pytest.raises(RuntimeError, match="HTTP error occurred"):
+    with pytest.raises(OpenAIClientHTTPError, match="HTTP error occurred"):
         await client.make_prompt_request(prompt="Hello!")
 
 
@@ -51,5 +52,5 @@ async def test_make_prompt_request_request_error(httpx_mock):
     )
 
     client = AsyncOpenAIClient(api_key=settings.OPENAI_TEST_API_KEY)
-    with pytest.raises(RuntimeError, match="Request error occurred"):
+    with pytest.raises(OpenAIClientRequestError, match="Request error occurred"):
         await client.make_prompt_request(prompt="Hello!")
