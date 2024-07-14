@@ -1,38 +1,14 @@
 import logging
 from datetime import date
 import json
-from functools import wraps
-from typing import Any, Callable
 
 from fastapi import HTTPException
 
 from api.articles.model import GetArticleResponseModel
 from app.context import FastAPIWithContext
-import asyncio
-
+from utils.retry import retry
 
 logger = logging.getLogger(__name__)
-
-
-def retry(n: int, delay: int = 0) -> Callable:
-    def wrapper(func: Callable) -> Callable:
-        @wraps(func)
-        async def inner(*args, **kwargs) -> Any:
-            attempts = n
-            while attempts > 0:
-                try:
-                    return await func(*args, **kwargs)
-                except Exception as err:
-                    attempts -= 1
-                    if attempts == 0:
-                        logger.error(f"All retries failed for {func.__name__}: {err}")
-                        raise
-                    else:
-                        logger.warning(f"Retrying {func.__name__} due to: {err}. {attempts} attempts left.")
-                        if delay > 0:
-                            await asyncio.sleep(delay)
-        return inner
-    return wrapper
 
 
 class GetArticleHandler:
@@ -82,7 +58,7 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             logger.error(f"Failed to fetch word of the day: {str(e)}")
             raise RuntimeError("Failed to fetch word of the day") from e
 
-    @retry(3)
+    # @retry(3)
     async def generate_article(self, app: FastAPIWithContext, awad: str) -> dict:
         try:
             response = await app.openai_client.make_prompt_request(
