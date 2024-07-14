@@ -18,3 +18,12 @@ run_tests:
 
 down_test:
 	docker compose -f $(test_file) down
+
+lint:
+	black --check .
+	isort --check-only .
+	flake8 .
+
+format:
+	black .
+	isort .
