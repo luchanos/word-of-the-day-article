@@ -20,8 +20,12 @@ def retry(n: int, delay: int = 0) -> Callable:
                         logger.error(f"All retries failed for {func.__name__}: {err}")
                         raise
                     else:
-                        logger.warning(f"Retrying {func.__name__} due to: {err}. {attempts} attempts left.")
+                        logger.warning(
+                            f"Retrying {func.__name__} due to: {err}. {attempts} attempts left."
+                        )
                         if delay > 0:
                             await asyncio.sleep(delay)
+
         return inner
+
     return wrapper

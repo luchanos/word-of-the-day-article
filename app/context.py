@@ -11,10 +11,11 @@ class FastAPIWithContext(FastAPI):
     article_cache: ArticleCache
 
     def __init__(
-            self, *args,
-            wordsmith_client: WordsmithClient,
-            openai_client: AsyncOpenAIClient,
-            **kwargs,
+        self,
+        *args,
+        wordsmith_client: WordsmithClient,
+        openai_client: AsyncOpenAIClient,
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.wordsmith_client = wordsmith_client

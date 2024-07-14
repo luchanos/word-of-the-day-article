@@ -2,7 +2,9 @@ LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "json": {"format": '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "message": "%(message)s"}'}
+        "json": {
+            "format": '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "message": "%(message)s"}'
+        }
     },
     "handlers": {
         "console": {

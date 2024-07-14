@@ -42,7 +42,9 @@ def create_minimal_app() -> FastAPIWithContext:
 def register_errors(app: FastAPI):
     @app.exception_handler(redis.RedisError)
     async def _(request: Request, exc: redis.RedisError):
-        logger.exception("request=%s redis error: %s %s ", request, exc, getattr(exc, "info", ""))
+        logger.exception(
+            "request=%s redis error: %s %s ", request, exc, getattr(exc, "info", "")
+        )
         return JSONResponse(
             status_code=500,
             content={"detail": exc.args},

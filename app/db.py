@@ -2,13 +2,15 @@ import redis.asyncio as redis
 
 
 class RedisClient:
-    def __init__(self, host: str, port: int = 6379, db: int = 0, max_connections: int = 10):
+    def __init__(
+        self, host: str, port: int = 6379, db: int = 0, max_connections: int = 10
+    ):
         self._pool = redis.ConnectionPool(
             host=host,
             port=port,
             db=db,
             max_connections=max_connections,
-            decode_responses=True
+            decode_responses=True,
         )
         self.client = redis.Redis(connection_pool=self._pool)
 

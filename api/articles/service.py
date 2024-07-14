@@ -31,8 +31,7 @@ In the response I want to see 100% valid for json.loads() json-file with two key
             response_data = await self.generate_article(app, awad)
 
             await app.cache["article"].cache_article(
-                header=response_data["header"],
-                article=response_data["body"]
+                header=response_data["header"], article=response_data["body"]
             )
 
             return self.build_response(response_data)

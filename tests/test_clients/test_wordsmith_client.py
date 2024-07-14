@@ -23,7 +23,9 @@ async def test_get_awad_success(httpx_mock):
         </channel>
     </rss>
     """
-    httpx_mock.add_response(url="https://wordsmith-test.org/awad/rss1.xml", text=mock_response)
+    httpx_mock.add_response(
+        url="https://wordsmith-test.org/awad/rss1.xml", text=mock_response
+    )
 
     client = WordsmithClient(base_url="wordsmith-test.org")
     word = await client.get_awad()
@@ -31,7 +33,9 @@ async def test_get_awad_success(httpx_mock):
 
 
 async def test_get_awad_http_error(httpx_mock):
-    httpx_mock.add_response(url="https://wordsmith-test.org/awad/rss1.xml", status_code=404)
+    httpx_mock.add_response(
+        url="https://wordsmith-test.org/awad/rss1.xml", status_code=404
+    )
 
     client = WordsmithClient(base_url="wordsmith-test.org")
     with pytest.raises(RuntimeError, match="Error fetching word of the day"):
@@ -54,7 +58,9 @@ async def test_get_awad_no_entries(httpx_mock):
         </channel>
     </rss>
     """
-    httpx_mock.add_response(url="https://wordsmith-test.org/awad/rss1.xml", text=mock_response)
+    httpx_mock.add_response(
+        url="https://wordsmith-test.org/awad/rss1.xml", text=mock_response
+    )
 
     client = WordsmithClient(base_url="wordsmith-test.org")
     with pytest.raises(RuntimeError, match="No entries found in the RSS feed"):
