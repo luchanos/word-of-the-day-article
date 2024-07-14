@@ -7,7 +7,7 @@ class WordsmithClient:
     def __init__(self, base_url: str = "wordsmith.org"):
         self.base_url = base_url
 
-    async def get_awad(self):
+    async def get_awad(self) -> str:
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(f"https://{self.base_url}/awad/rss1.xml")

@@ -21,7 +21,7 @@ class AsyncOpenAIClient:
         n: int = 1,
         stop=None,
         model: str = "gpt-3.5-turbo",
-    ):
+    ) -> dict:
         return {
             "model": model,
             "messages": [

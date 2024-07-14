@@ -16,7 +16,7 @@ from app.wordsmith import WordsmithClient
 logger = logging.getLogger("app")
 
 
-def include_routers():
+def include_routers() -> APIRouter:
     api_router = APIRouter(prefix="/api")
     api_router.include_router(router=articles_router)
     return api_router
@@ -39,7 +39,7 @@ def create_minimal_app() -> FastAPIWithContext:
     return app
 
 
-def register_errors(app: FastAPI):
+def register_errors(app: FastAPI) -> None:
     @app.exception_handler(redis.RedisError)
     async def _(request: Request, exc: redis.RedisError):
         logger.exception(
