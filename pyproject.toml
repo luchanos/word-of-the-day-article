@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "word-of-the-day-article"
+version = "0.1.0"
+description = "Word of the Day Application"
+authors = ["luchanos"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.111.0"
+pydantic = "^2.8.2"
+pytest = "^8.2.2"
+pytest-asyncio = "^0.23.7"
+httpx = "^0.27.0"
+envparse = "^0.2.0"
+flake8 = "^7.1.0"
+feedparser = "^6.0.11"
+redis = "^5.0.7"
+pytest-httpx = "^0.30.0"
+pytest-mock = "^3.14.0"
+isort = "^5.13.2"
+black = "^24.4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
