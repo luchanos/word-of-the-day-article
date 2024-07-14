@@ -8,6 +8,7 @@ from fastapi import HTTPException
 
 from api.articles.model import GetArticleResponseModel
 from app.context import FastAPIWithContext
+import asyncio
 
 
 logger = logging.getLogger(__name__)
